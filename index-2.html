@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nido · ¿Cómo organizás la vida familiar?</title>
+<meta name="description" content="6 minutos para ayudarnos a crear una app uruguaya que organice la vida familiar.">
+<meta property="og:title" content="¿Cómo organizás la vida familiar?">
+<meta property="og:description" content="6 minutos para ayudarnos a crear Nido, una app uruguaya para organizar la familia.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2D6A64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F5F2EC; --card:#FFFFFF; --ink:#1E2B2F; --muted:#5A6668; --line:#E4DED4; --soft:#EDE8DF;
+  --teal:#2D6A64; --teal-deep:#1F4E49; --teal-soft:#DCEBE7;
+  --amber-soft:#F6E7C8; --amber:#7A5310;
+  --red:#A3261D;
+  --display:'Bricolage Grotesque', 'Avenir Next', system-ui, sans-serif;
+  --body:Figtree, 'Segoe UI', system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.wrap{min-height:100dvh;max-width:560px;margin:0 auto;display:flex;flex-direction:column;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;gap:12px;height:48px}
+.logo{font:700 26px var(--display);color:var(--teal);letter-spacing:-.5px}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--teal);border-radius:4px;transition:width .3s ease}
+.back{width:44px;height:44px;border-radius:14px;border:0;background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.back[hidden]{display:none}
+main{flex:1;display:flex;flex-direction:column;padding-top:20px}
+.screen{display:flex;flex-direction:column;gap:16px;animation:in .28s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}.bar i{transition:none}}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--teal)}
+h1{margin:0;font:700 clamp(28px,7vw,36px)/1.08 var(--display);letter-spacing:-.8px;text-wrap:balance}
+h2{margin:0;font:700 clamp(24px,6vw,30px)/1.12 var(--display);letter-spacing:-.6px;text-wrap:balance}
+p{margin:0}
+.lead{font-size:18px;color:#3C474A}
+.help{font-size:15px;color:var(--muted)}
+.note{background:var(--teal-soft);color:var(--teal-deep);border-radius:18px;padding:14px 16px;font-size:16px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{min-height:58px;border:0;border-radius:18px;background:var(--card);padding:14px 16px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;box-shadow:0 0 0 1px var(--line) inset;transition:box-shadow .15s,background .15s}
+.opt:hover{box-shadow:0 0 0 2px #BFD8D2 inset}
+.opt[aria-checked="true"]{box-shadow:0 0 0 2px var(--teal) inset;background:#F3F9F7}
+.opt .mk{width:26px;height:26px;border-radius:8px;border:2px solid #BDB4A6;flex:0 0 26px;display:flex;align-items:center;justify-content:center}
+.opt.radio .mk{border-radius:13px}
+.opt[aria-checked="true"] .mk{background:var(--teal);border-color:var(--teal);color:#fff}
+.opt .mk svg{width:16px;height:16px;opacity:0}
+.opt[aria-checked="true"] .mk svg{opacity:1}
+.opt > span:last-child{flex:1}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.scale .opt{justify-content:center;font:700 22px var(--display);min-height:64px;padding:0}
+.scale-l{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);gap:12px}
+.field{width:100%;min-height:56px;border-radius:16px;border:1px solid var(--line);background:var(--card);padding:14px 16px;font-size:17px}
+textarea.field{min-height:140px;resize:vertical}
+select.field{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%235A6668' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:44px}
+.other{margin-top:-2px}
+.foot{padding-top:20px;display:flex;flex-direction:column;gap:10px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 24%);padding-bottom:4px}
+.btn{height:58px;border-radius:18px;border:0;background:var(--teal);color:#fff;font-weight:600;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.btn:disabled{background:#A9C4BF;cursor:default}
+.btn.sec{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line) inset}
+.skip{background:none;border:0;color:var(--teal);font-weight:600;font-size:16px;padding:8px;cursor:pointer;align-self:center}
+.err{color:var(--red);font-size:15px;font-weight:600}
+.hero{display:flex;flex-direction:column;gap:10px;margin:8px 0 4px}
+.chip{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:18px;padding:12px 14px;box-shadow:0 6px 18px rgba(30,43,47,.06)}
+.chip b{width:48px;font-size:15px;font-variant-numeric:tabular-nums}
+.chip i{width:4px;height:36px;border-radius:2px;flex-shrink:0}
+.chip span{display:flex;flex-direction:column;font-size:15px}
+.chip small{font-size:13px;color:var(--muted)}
+.meta{display:flex;gap:14px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.meta span{display:flex;align-items:center;gap:6px}
+.big-check{width:84px;height:84px;border-radius:42px;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;margin:24px 0 8px}
+.count{font-size:14px;color:var(--muted);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="back" id="back" type="button" aria-label="Volver a la pregunta anterior" hidden>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+    <span class="logo" id="logo">nido</span>
+    <div class="bar" id="barWrap" hidden><i id="bar"></i></div>
+  </div>
+  <main id="main" aria-live="polite"></main>
+</div>
+
+<script>
+/* ===== CONFIGURACIÓN =====
+   Pegá acá el link de tu Aplicación web de Google Apps Script (termina en /exec). */
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyomWver_AZl0PlugjX_F6uUlyS8DPyluU93gcRVvyMgmuXJ2ahGNbwwsyaqfGHMzBE/exec';
+/* ======================== */
+
+const KIDS = ['Tengo hijos', 'Tuve un bebé en el último año'];
+const works = a => a.trabaja === undefined || a.trabaja === 'Sí';
+const hasKids = a => !Array.isArray(a.perfil) || a.perfil.length === 0 || a.perfil.some(x => KIDS.includes(x));
+
+const Q = [
+  {sec:'Sobre vos', id:'perfil', type:'multi', req:true, title:'¿Qué te describe hoy?', help:'Marcá todas las que apliquen.',
+   opts:['Tengo hijos','Estoy embarazada','Tuve un bebé en el último año','Estoy amamantando','Soy papá o pareja de alguien que cumple alguna de estas','Soy abuela, abuelo o cuidadora']},
+  {sec:'Sobre vos', id:'edades_hijos', type:'multi', title:'¿De qué edades son tus hijos?', help:'Marcá todas las que apliquen.', when:hasKids,
+   opts:['0 a 1 año','1 a 3 años','4 a 6 años','7 a 12 años','13 años o más']},
+  {sec:'Sobre vos', id:'departamento', type:'select', title:'¿En qué departamento vivís?',
+   opts:['Artigas','Canelones','Cerro Largo','Colonia','Durazno','Flores','Florida','Lavalleja','Maldonado','Montevideo','Paysandú','Río Negro','Rivera','Rocha','Salto','San José','Soriano','Tacuarembó','Treinta y Tres','Vivo fuera de Uruguay']},
+  {sec:'Sobre vos', id:'trabaja', type:'single', title:'¿Trabajás?',
+   opts:['Sí','No por ahora','Estoy de licencia']},
+  {sec:'Sobre vos', id:'donde_trabaja', type:'single', when:works, title:'¿Trabajás desde casa o fuera?',
+   opts:['Desde casa','Fuera de casa','Mixto, algunos días en casa y otros fuera']},
+  {sec:'Sobre vos', id:'jornada', type:'single', when:works, title:'¿Cuánto tiempo trabajás?',
+   opts:['Tiempo completo','Medio tiempo','Por horas o según el día','Independiente, varía mucho']},
+  {sec:'Sobre vos', id:'quien_cuida', type:'multi', title:'¿Quiénes más participan en el cuidado de los chicos?', help:'Marcá todas las que apliquen.',
+   opts:['Pareja','Abuelos','Niñera','Guardería o escuela de horario extendido','Otros familiares','Nadie más']},
+
+  {sec:'Cómo te organizás hoy', id:'herramientas', type:'multi', other:true, title:'¿Qué usás hoy para organizar las cosas de los chicos?', help:'Actividades, turnos, cumpleaños, salud. Marcá todas.',
+   opts:['Mi cabeza','WhatsApp (grupo o chat con mi pareja)','Notas del celular','Calendario de Google o del iPhone','Agenda o cuaderno en papel','Una app específica']},
+  {sec:'Cómo te organizás hoy', id:'cosas_por_semana', type:'single', when:hasKids, title:'En una semana normal, ¿cuántas cosas distintas tenés que coordinar de tus hijos?', help:'Actividades, horarios, quién lleva, cumpleaños, salud.',
+   opts:['Menos de 5','5 a 10','11 a 20','Más de 20']},
+  {sec:'Cómo te organizás hoy', id:'dificultad', type:'scale', title:'¿Qué tan difícil te resulta coordinar la semana familiar?', lo:'Muy fácil', hi:'Muy difícil'},
+  {sec:'Cómo te organizás hoy', id:'te_paso', type:'multi', title:'En los últimos 3 meses, ¿te pasó alguna de estas?', help:'Marcá todas las que apliquen.',
+   opts:['Me olvidé de sacar hora para un control o una vacuna','No sabía si ya le habían dado un remedio','No encontré el carnet o un dato de salud cuando lo necesité','Nadie sabía quién buscaba al niño','Me enteré tarde de un acto, cumpleaños o reunión','Ninguna']},
+  {sec:'Cómo te organizás hoy', id:'historia', type:'long', title:'Contanos la última vez que algo de la organización familiar se te complicó.', help:'Opcional, pero nos ayuda muchísimo.', ph:'¿Qué pasó?'},
+
+  {sec:'La carga mental', id:'quien_planifica', type:'single', note:'La “carga mental” es el trabajo invisible de acordarse, planificar y estar pendiente de todo, aunque otra persona después lo haga.',
+   title:'En tu casa, ¿quién se acuerda y planifica las cosas de los hijos?',
+   opts:['Casi todo yo','La mayoría yo','Mitad y mitad','La mayoría mi pareja','Casi todo mi pareja','Otra persona']},
+  {sec:'La carga mental', id:'todo_en_la_cabeza', type:'scale', title:'¿Con qué frecuencia sentís que tenés “todo en la cabeza”?', lo:'Nunca', hi:'Todos los días'},
+  {sec:'La carga mental', id:'ayuda_que_otro_vea', type:'scale', title:'¿Cuánto te ayudaría que tu pareja u otra persona viera y se encargara de su parte sin que se lo tengas que recordar?', lo:'Nada', hi:'Muchísimo'},
+  {sec:'La carga mental', id:'si_faltas_una_semana', type:'single', title:'Si tuvieras que faltar una semana, ¿otra persona podría sostener la agenda de los chicos?',
+   opts:['Sí, sin problema','Con mucha ayuda mía','No']},
+
+  {sec:'La app', id:'utilidad', type:'scale', note:'Nido es una agenda compartida para toda la familia. Cada hijo tiene su color, cada actividad tiene quién lleva y quién busca, y la app le avisa a cada persona lo que le toca. Además guarda la salud de cada hijo (carnet, controles, vacunas, fiebre y remedios compartidos) y suma etapas opcionales como embarazo, posparto y lactancia.',
+   title:'¿Qué tan útil te parece?', lo:'Nada útil', hi:'Muy útil'},
+  {sec:'La app', id:'usaria', type:'single', req:true, title:'¿La usarías?', opts:['Seguro','Probablemente','No sé','Probablemente no','No']},
+  {sec:'La app', id:'partes_que_usaria', type:'multi', title:'¿Qué partes usarías?', help:'Marcá todas las que quieras.',
+   opts:['Agenda semanal compartida','Quién lleva y quién busca','Avisos para cada persona','Carnet de salud y vacunas','Controles con preguntas para el pediatra','Registro compartido de fiebre y remedios','Seguimiento del embarazo','Lactancia y stock de leche','Checklist de trámites al nacer','Talles y lista de compras']},
+  {sec:'La app', id:'toda_o_parte', type:'single', title:'¿La usarías toda o solo una parte?', opts:['Toda','Solo la agenda familiar','Solo la salud','Solo embarazo o lactancia','No la usaría']},
+  {sec:'La app', id:'compartiria_con', type:'multi', title:'¿Con quién la compartirías?', help:'Marcá todas las que apliquen.', opts:['Pareja','Abuelos','Niñera','Otros familiares','Con nadie']},
+  {sec:'La app', id:'freno', type:'multi', other:true, title:'¿Qué te haría NO usarla?', help:'Marcá todas las que apliquen.',
+   opts:['Lleva tiempo cargar las cosas','Mi pareja no la usaría','Ya uso otra cosa que me sirve','Privacidad de los datos de salud','Muchas notificaciones','El precio']},
+
+  {sec:'Precio', id:'pagaria', type:'single', req:true, note:'No hay respuestas correctas: nos ayuda a pensar un precio justo.', title:'¿Pagarías por una app así?', opts:['Sí','Tal vez, depende de lo que incluya','Solo si es gratis']},
+  {sec:'Precio', id:'precio_mes', type:'single', title:'¿Cuánto te parecería razonable por mes para toda la familia?', help:'En pesos uruguayos.',
+   opts:['Hasta $100','$100 a $200','$200 a $300','$300 a $450','Más de $450','No pagaría']},
+  {sec:'Precio', id:'preferencia_pago', type:'single', title:'¿Qué preferirías?',
+   opts:['Pagar mensual','Pagar anual con descuento','Gratis con publicidad','Gratis con lo básico y pagar por extras','Que me lo dé la mutualista o mi trabajo']},
+
+  {sec:'Último paso', id:'llamada', type:'single', title:'¿Podemos llamarte 15 minutos para conocer tu experiencia?', opts:['Sí, me encantaría','Ahora no']},
+  {sec:'Último paso', id:'contacto', type:'contact', title:'¿Te interesa saber más o probar Nido antes que nadie?', help:'Completalo si querés que te avisemos cuando abramos el piloto o para coordinar la llamada. Es opcional: si no, dejalo en blanco y enviá tus respuestas.'}
+];
+
+const KEY = 'nido-encuesta-v1';
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const clear = () => { try { localStorage.removeItem(KEY); } catch (e) {} };
+
+const params = new URLSearchParams(location.search);
+let S = load() || {step:'intro', i:0, a:{}, hist:[], id:(Date.now().toString(36) + Math.random().toString(36).slice(2, 7))};
+if (S.step === 'done') S = {step:'intro', i:0, a:{}, hist:[], id:(Date.now().toString(36) + Math.random().toString(36).slice(2, 7))};
+S.src = params.get('src') || S.src || '';
+
+const main = document.getElementById('main');
+const backBtn = document.getElementById('back');
+const bar = document.getElementById('bar');
+const barWrap = document.getElementById('barWrap');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+
+const visible = () => Q.filter(q => !q.when || q.when(S.a));
+function nextIndex(from) { for (let j = from + 1; j < Q.length; j++) { if (!Q[j].when || Q[j].when(S.a)) return j; } return -1; }
+
+function answered(q) {
+  const v = S.a[q.id];
+  if (q.type === 'multi') return Array.isArray(v) && v.length > 0;
+  return v !== undefined && v !== null && String(v).trim() !== '';
+}
+
+function render() {
+  save();
+  backBtn.hidden = S.step !== 'q';
+  barWrap.hidden = S.step !== 'q';
+  if (S.step === 'intro') return renderIntro();
+  if (S.step === 'done') return renderDone();
+  if (S.step === 'sending') return renderSending();
+  renderQ(Q[S.i]);
+}
+
+function renderIntro() {
+  main.innerHTML = `
+  <section class="screen">
+    <div class="hero" aria-hidden="true">
+      <div class="chip"><b>08:30</b><i style="background:#6C8FD6"></i><span>Guardería<small>Tomás · lleva papá</small></span></div>
+      <div class="chip" style="margin-left:24px"><b>14:00</b><i style="background:#E8866A"></i><span>Vacuna de los 8 meses<small>Inés · lleva mamá</small></span></div>
+      <div class="chip" style="margin-left:8px"><b>SÁB</b><i style="background:#E8C77E"></i><span>Cumple de Juana<small style="color:#7A5310;font-weight:700">Falta el regalo</small></span></div>
+    </div>
+    <h1>¿Cómo organizás la vida familiar?</h1>
+    <p class="lead">Estamos creando Nido, una app hecha en Uruguay para organizar la familia: actividades de los hijos, quién lleva a quién, salud y etapas como el embarazo. Antes de construirla, queremos escucharte.</p>
+    <div class="meta"><span>6 minutos</span><span>·</span><span>Anónimo</span><span>·</span><span>25 preguntas cortas</span></div>
+  </section>
+  <div class="foot"><button class="btn" id="start" type="button">Empezar</button></div>`;
+  document.getElementById('start').onclick = () => { S.step = 'q'; S.i = 0; S.hist = []; render(); };
+}
+
+function progress() {
+  const vis = visible();
+  const pos = vis.indexOf(Q[S.i]);
+  bar.style.width = Math.round(((pos) / vis.length) * 100) + '%';
+  return {pos: pos + 1, total: vis.length};
+}
+
+function renderQ(q) {
+  const {pos, total} = progress();
+  const v = S.a[q.id];
+  let body = '';
+  if (q.type === 'multi' || q.type === 'single') {
+    const multi = q.type === 'multi';
+    const sel = multi ? (Array.isArray(v) ? v : []) : v;
+    body = `<div class="opts" role="${multi ? 'group' : 'radiogroup'}" aria-label="${esc(q.title)}">` +
+      q.opts.map((o, k) => {
+        const on = multi ? sel.includes(o) : sel === o;
+        return `<button type="button" class="opt ${multi ? '' : 'radio'}" role="${multi ? 'checkbox' : 'radio'}" aria-checked="${on}" data-k="${k}"><span class="mk">${CHECK}</span><span>${esc(o)}</span></button>`;
+      }).join('') +
+      (q.other ? `<input class="field other" id="other" type="text" placeholder="Otro (escribilo acá)" value="${esc(S.a[q.id + '_otro'] || '')}">` : '') +
+      `</div>`;
+  } else if (q.type === 'scale') {
+    body = `<div class="scale" role="radiogroup" aria-label="${esc(q.title)}">` +
+      [1,2,3,4,5].map(n => `<button type="button" class="opt radio" role="radio" aria-checked="${v === n}" data-n="${n}" aria-label="${n}${n === 1 ? ' · ' + esc(q.lo) : n === 5 ? ' · ' + esc(q.hi) : ''}">${n}</button>`).join('') +
+      `</div><div class="scale-l"><span>1 · ${esc(q.lo)}</span><span>5 · ${esc(q.hi)}</span></div>`;
+  } else if (q.type === 'select') {
+    body = `<label class="help" for="sel" style="position:absolute;left:-9999px">${esc(q.title)}</label><select class="field" id="sel"><option value="">Elegí una opción</option>` +
+      q.opts.map(o => `<option${v === o ? ' selected' : ''}>${esc(o)}</option>`).join('') + `</select>`;
+  } else if (q.type === 'text') {
+    body = `<label for="txt" style="position:absolute;left:-9999px">${esc(q.title)}</label><input class="field" id="txt" type="text" autocomplete="email" placeholder="${esc(q.ph || '')}" value="${esc(v || '')}">`;
+  } else if (q.type === 'contact') {
+    body = `<label class="help" for="nombre" style="font-weight:600;color:var(--ink)">Nombre</label>
+      <input class="field" id="nombre" type="text" autocomplete="given-name" placeholder="Tu nombre" value="${esc(S.a.nombre || '')}">
+      <label class="help" for="celular" style="font-weight:600;color:var(--ink)">Celular</label>
+      <input class="field" id="celular" type="tel" inputmode="tel" autocomplete="tel" placeholder="099 123 456" value="${esc(S.a.celular || '')}">`;
+  } else if (q.type === 'long') {
+    body = `<label for="txt" style="position:absolute;left:-9999px">${esc(q.title)}</label><textarea class="field" id="txt" placeholder="${esc(q.ph || '')}">${esc(v || '')}</textarea>`;
+  }
+  const isLast = nextIndex(S.i) === -1;
+  const canSkip = !q.req;
+  main.innerHTML = `
+  <section class="screen">
+    <span class="eyebrow">${esc(q.sec)} <span class="count">· ${pos} de ${total}</span></span>
+    ${q.note ? `<p class="note">${esc(q.note)}</p>` : ''}
+    <h2 id="qt">${esc(q.title)}</h2>
+    ${q.help ? `<p class="help">${esc(q.help)}</p>` : ''}
+    ${body}
+    <p class="err" id="err" role="alert" hidden></p>
+  </section>
+  <div class="foot">
+    <button class="btn" id="next" type="button">${isLast ? 'Enviar mis respuestas' : 'Siguiente'}</button>
+    ${canSkip && !isLast ? `<button class="skip" id="skip" type="button">Saltar esta pregunta</button>` : ''}
+  </div>`;
+  wire(q, isLast);
+}
+
+function wire(q, isLast) {
+  const err = document.getElementById('err');
+  const showErr = m => { err.textContent = m; err.hidden = false; };
+  main.querySelectorAll('.opt[data-k]').forEach(b => b.onclick = () => {
+    const o = q.opts[+b.dataset.k];
+    err.hidden = true;
+    if (q.type === 'multi') {
+      let arr = Array.isArray(S.a[q.id]) ? S.a[q.id].slice() : [];
+      const exclusive = ['Ninguna', 'Nadie más', 'Con nadie'];
+      if (arr.includes(o)) arr = arr.filter(x => x !== o);
+      else {
+        if (exclusive.includes(o)) arr = [o];
+        else { arr = arr.filter(x => !exclusive.includes(x)); if (q.max && arr.length >= q.max) { showErr(`Podés elegir hasta ${q.max}. Sacá una para sumar otra.`); return; } arr.push(o); }
+      }
+      S.a[q.id] = arr; save();
+      main.querySelectorAll('.opt[data-k]').forEach(x => x.setAttribute('aria-checked', arr.includes(q.opts[+x.dataset.k])));
+    } else {
+      S.a[q.id] = o; save();
+      main.querySelectorAll('.opt[data-k]').forEach(x => x.setAttribute('aria-checked', x === b));
+      if (!isLast) setTimeout(go, 260);
+    }
+  });
+  main.querySelectorAll('.opt[data-n]').forEach(b => b.onclick = () => {
+    S.a[q.id] = +b.dataset.n; save();
+    main.querySelectorAll('.opt[data-n]').forEach(x => x.setAttribute('aria-checked', x === b));
+    if (!isLast) setTimeout(go, 260);
+  });
+  const other = document.getElementById('other');
+  if (other) other.oninput = () => { S.a[q.id + '_otro'] = other.value; save(); };
+  const sel = document.getElementById('sel');
+  if (sel) sel.onchange = () => { S.a[q.id] = sel.value; save(); };
+  ['nombre', 'celular'].forEach(f => { const el = document.getElementById(f); if (el) el.oninput = () => { S.a[f] = el.value; save(); }; });
+  const txt = document.getElementById('txt');
+  if (txt) {
+    txt.oninput = () => { S.a[q.id] = txt.value; save(); };
+    if (q.type === 'text') txt.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('next').click(); } };
+  }
+  document.getElementById('next').onclick = () => {
+    if (q.req && !answered(q)) { showErr('Esta respuesta nos hace falta para entender los resultados.'); return; }
+    if (isLast) submit(); else go();
+  };
+  const skip = document.getElementById('skip');
+  if (skip) skip.onclick = () => go();
+  const h = document.getElementById('qt'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({preventScroll:true}); }
+}
+
+function go() {
+  const n = nextIndex(S.i);
+  if (n === -1) return submit();
+  S.hist.push(S.i); S.i = n; window.scrollTo(0, 0); render();
+}
+
+backBtn.onclick = () => {
+  if (S.hist.length) { S.i = S.hist.pop(); render(); }
+  else { S.step = 'intro'; render(); }
+};
+
+function payload() {
+  const out = {};
+  visible().forEach(q => {
+    if (q.type === 'contact') { out.nombre = (S.a.nombre || '').trim(); out.celular = (S.a.celular || '').trim(); return; }
+    const v = S.a[q.id];
+    out[q.id] = Array.isArray(v) ? v.join('; ') : (v === undefined ? '' : v);
+    if (q.other) out[q.id + '_otro'] = S.a[q.id + '_otro'] || '';
+  });
+  return {id:S.id, src:S.src, enviado:new Date().toISOString(), dispositivo:(navigator.userAgent || '').slice(0, 160), answers:out};
+}
+
+function renderSending() {
+  main.innerHTML = `<section class="screen"><h2>Enviando…</h2><p class="help">Un segundo.</p></section>`;
+}
+
+async function submit() {
+  S.step = 'sending'; render();
+  try {
+    if (!ENDPOINT || ENDPOINT.indexOf('http') !== 0) throw new Error('Falta configurar el link de Apps Script');
+    await fetch(ENDPOINT, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload())});
+    S.step = 'done'; bar.style.width = '100%'; render(); clear();
+  } catch (e) {
+    S.step = 'q'; render();
+    const err = document.getElementById('err');
+    if (err) { err.textContent = 'No pudimos enviar tus respuestas. Revisá tu conexión y tocá Enviar de nuevo.'; err.hidden = false; }
+    console.error(e);
+  }
+}
+
+function renderDone() {
+  main.innerHTML = `
+  <section class="screen" style="align-items:flex-start">
+    <span class="big-check">${CHECK.replace('aria-hidden', 'width="44" height="44" aria-hidden')}</span>
+    <h1>¡Gracias!</h1>
+    <p class="lead">Tu respuesta nos ayuda muchísimo a construir algo que sirva de verdad a las familias.</p>
+    <p class="help">Si conocés a alguien a quien le pueda servir, pasale el link.</p>
+  </section>
+  <div class="foot"><button class="btn sec" id="share" type="button">Compartir por WhatsApp</button></div>`;
+  document.getElementById('share').onclick = () => {
+    const url = location.origin + location.pathname + '?src=reenvio';
+    window.open('https://wa.me/?text=' + encodeURIComponent('Estoy ayudando a crear una app uruguaya para organizar la familia. ¿Me das 6 minutos? ' + url), '_blank');
+  };
+}
+
+render();
+</script>
+</body>
+</html>
